@@ -13,7 +13,9 @@ import { execute } from "./database";
 import { customerTable, orderTable } from "./constants";
 
 export async function message(messages: StoredMessage[]) {
+  console.log("Message function called with:", messages.length, "messages");
   const deserialized = mapStoredMessagesToChatMessages(messages);
+  console.log("Deserialized messages:", deserialized.length);
 
   const getFromDB = tool(
     async (input) => {
@@ -43,22 +45,27 @@ export async function message(messages: StoredMessage[]) {
     }
   );
 
-  const agent = createReactAgent({
-    llm: new ChatOllama({ model: "llama3.2", temperature: 0 }),
-    /*llm: new ChatWatsonx({
-      model: "mistralai/mistral-large",
-      projectId: process.env.WATSONX_AI_PROJECT_ID,
-      serviceUrl: process.env.WATSONX_AI_ENDPOINT,
-      version: "2024-05-31",
-    })*/
-    tools: [getFromDB],
-  });
+  try {
+    const agent = createReactAgent({
+      llm: new ChatOllama({ model: "llama3.2", temperature: 0 }),
+      /*llm: new ChatWatsonx({
+        model: "mistralai/mistral-large",
+        projectId: process.env.WATSONX_AI_PROJECT_ID,
+        serviceUrl: process.env.WATSONX_AI_ENDPOINT,
+        version: "2024-05-31",
+      })*/
+      tools: [getFromDB],
+    });
 
-  const response = await agent.invoke({
-    messages: deserialized,
-  });
+    const response = await agent.invoke({
+      messages: deserialized,
+    });
 
-  // console.log({ response });
+    console.log("Agent response:", response);
 
-  return response.messages[response.messages.length - 1].content;
+    return response.messages[response.messages.length - 1].content;
+  } catch (error) {
+    console.error("Error in message function:", error);
+    return "Sorry, I encountered an error processing your request. Please try again.";
+  }
 }

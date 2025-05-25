@@ -3,13 +3,24 @@
 import sqlite3 from "sqlite3";
 import { customerTable, orderTable } from "./constants";
 
-const db = new sqlite3.Database('":memory:"');
+const db = new sqlite3.Database(":memory:");
 
 export async function seed() {
+  console.log("Starting database seeding...");
   db.serialize(() => {
-    db.run(customerTable);
-    db.run(orderTable);
+    console.log("Creating customer table...");
+    db.run(customerTable, (err) => {
+      if (err) console.error("Error creating customer table:", err);
+      else console.log("Customer table created successfully");
+    });
+    
+    console.log("Creating order table...");
+    db.run(orderTable, (err) => {
+      if (err) console.error("Error creating order table:", err);
+      else console.log("Order table created successfully");
+    });
 
+    console.log("Inserting customer data...");
     db.run(`
 REPLACE INTO 'customer' ('id', 'email', 'name')  
 VALUES  
@@ -23,8 +34,12 @@ VALUES
     (8, 'george.han@example.com', 'George Han'),  
     (9, 'asha.kumari@example.com', 'Asha Kumari'),  
     (10, 'salma.khan@example.com', 'Salma Khan');
-    `);
+    `, (err) => {
+      if (err) console.error("Error inserting customer data:", err);
+      else console.log("Customer data inserted successfully");
+    });
 
+    console.log("Inserting order data...");
     db.run(`
 REPLACE INTO 'order' ('id', 'createdate', 'shippingcost', 'customerid', 'carrier', 'trackingid')
 VALUES
@@ -48,8 +63,12 @@ VALUES
     (18, '2024-08-06', 1, 6, '', ''),
     (19, '2024-08-04', 2, 1, '', ''),
     (20, '2024-08-01', 1, 1, '', '');    
-    `);
+    `, (err) => {
+      if (err) console.error("Error inserting order data:", err);
+      else console.log("Order data inserted successfully");
+    });
   });
+  console.log("Database seeding completed");
 }
 
 export async function execute(sql: string) {

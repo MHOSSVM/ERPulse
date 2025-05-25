@@ -29,7 +29,7 @@ export default function Home() {
 
   useEffect(() => {
     seed();
-  });
+  }, []);
 
   async function sendMessage() {
     setIsLoading(true); // set to true
