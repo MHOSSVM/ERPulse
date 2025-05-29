@@ -1,7 +1,6 @@
 "use server";
 
 import { ChatOllama } from "@langchain/ollama";
-import { ChatWatsonx } from "@langchain/community/chat_models/ibm";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { tool } from "@langchain/core/tools";
 import { z } from "zod";
@@ -11,12 +10,11 @@ import {
   SystemMessage,
 } from "@langchain/core/messages";
 import { execute } from "./database";
-import { customerTable, orderTable } from "./constants";
 
 export async function message(messages: StoredMessage[]) {
   console.log("🚀 MESSAGE FUNCTION CALLED");
   console.log("📥 Input messages:", messages.length, "messages");
-  console.log("📋 Messages details:", messages.map(m => ({ type: m.type, content: m.content.substring(0, 100) })));
+  console.log("📋 Messages types:", messages.map(m => m.type));
   
   const deserialized = mapStoredMessagesToChatMessages(messages);
   console.log("✅ Deserialized messages:", deserialized.length);
@@ -98,7 +96,7 @@ Example queries:
         model: "llama3.2", 
         temperature: 0,
         baseUrl: "http://localhost:11434", // Explicit Ollama URL
-        timeout: 30000, // 30 second timeout
+        // Note: timeout is handled by the agent configuration
       }),
       tools: [getFromDB],
     });
@@ -131,7 +129,10 @@ The database is fully functional - always use it to answer questions about custo
 
     const messagesToProcess = hasSystemMessage ? deserialized : [systemMessage, ...deserialized];
     console.log("📝 Total messages to process:", messagesToProcess.length);
-    console.log("🔍 Final messages being sent to agent:", messagesToProcess.map(m => ({ type: m.constructor.name, content: m.content.substring(0, 100) })));
+    console.log("🔍 Final messages being sent to agent:", messagesToProcess.map(m => ({ 
+      type: m.constructor.name, 
+      messageType: m._getType()
+    })));
 
     console.log("🎯 Invoking agent...");
     const response = await agent.invoke({

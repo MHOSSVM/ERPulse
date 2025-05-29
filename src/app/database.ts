@@ -137,6 +137,7 @@ export async function execute(sql: string) {
           
           // Add performance metadata to result
           if (Array.isArray(result)) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (result as any)._performance = {
               executionTime,
               timestamp: new Date(),
@@ -169,6 +170,7 @@ export async function verifyDatabaseState() {
       console.log("📋 Available tables:", tables);
       
       // Check customer table data
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       db.all("SELECT COUNT(*) as count FROM 'customer'", (err, customerCount: any) => {
         if (err) {
           console.error("❌ Error counting customers:", err);
@@ -181,6 +183,7 @@ export async function verifyDatabaseState() {
         }
         
         // Check order table data
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         db.all("SELECT COUNT(*) as count FROM 'order'", (err, orderCount: any) => {
           if (err) {
             console.error("❌ Error counting orders:", err);
@@ -195,6 +198,7 @@ export async function verifyDatabaseState() {
           
           const state = {
             success: true,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             tables: (tables as any[]).map((t: any) => t.name),
             customerCount: customerCount[0]?.count || 0,
             orderCount: orderCount[0]?.count || 0

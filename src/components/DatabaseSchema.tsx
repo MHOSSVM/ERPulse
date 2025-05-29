@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React from "react";
 
 interface DatabaseSchemaProps {
   isOpen: boolean;
@@ -108,9 +108,8 @@ export default function DatabaseSchema({ isOpen, onClose }: DatabaseSchemaProps)
           <div className="space-y-2 text-sm">
             <div className="bg-white p-2 rounded font-mono">
               SELECT * FROM customer LIMIT 5;
-            </div>
-            <div className="bg-white p-2 rounded font-mono">
-              SELECT c.name, COUNT(o.id) as order_count FROM customer c LEFT JOIN "order" o ON c.id = o.customerid GROUP BY c.id;
+            </div>            <div className="bg-white p-2 rounded font-mono">
+              SELECT c.name, COUNT(o.id) as order_count FROM customer c LEFT JOIN &quot;order&quot; o ON c.id = o.customerid GROUP BY c.id;
             </div>
           </div>
         </div>

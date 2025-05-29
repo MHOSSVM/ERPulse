@@ -110,6 +110,7 @@ export default function Home() {
     
     return dataLines.map(line => {
       const values = line.split('|').map(v => v.trim()).filter(v => v);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const row: any = {};
       headers.forEach((header, index) => {
         row[header] = values[index] || '';
@@ -269,7 +270,7 @@ export default function Home() {
               
               {/* Helper Text */}
               <div className="mt-3 flex items-center justify-between text-sm text-gray-500">
-                <span>Try asking: "Show me all customers" or "What are the recent orders?"</span>
+                <span>Try asking: &quot;Show me all customers&quot; or &quot;What are the recent orders?&quot;</span>
                 <span>Queries: {queryCount}</span>
               </div>
             </div>

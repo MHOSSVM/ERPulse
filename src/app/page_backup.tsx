@@ -22,11 +22,10 @@ export default function Home() {
   const [messages, setMessages] = useState<BaseMessage[]>([
     new SystemMessage(`
       You are an expert SQL assistant. Your task is to generate SQL queries based on user requests. Follow these strict formatting guidelines:
-        
-      You should create a SQLite query based on natural language. 
-      Use the "getFromDB" tool to get data from a database.
+          You should create a SQLite query based on natural language. 
+      Use the &quot;getFromDB&quot; tool to get data from a database.
 
-      - Always enclose field names and table names in double quotes ("), even if they contain no special characters.
+      - Always enclose field names and table names in double quotes (&quot;), even if they contain no special characters.
       - Ensure proper SQL syntax and use best practices for readability.
       - Maintain consistency in capitalization (e.g., SQL keywords in uppercase).
     `),
@@ -78,9 +77,7 @@ export default function Home() {
         const executionTime = endTime - startTime;
         
         // Count actual results from the response
-        const resultCount = parseTableData(response as string).length;
-        
-        setQueryStats(prev => [{
+        const resultCount = parseTableData(response as string).length;        setQueryStats(prev => [{
           query: inputMessage,
           executionTime,
           timestamp: new Date(),
@@ -108,8 +105,8 @@ export default function Home() {
     const headers = tableLines[0].split('|').map(h => h.trim()).filter(h => h);
     const dataLines = tableLines.slice(2); // Skip header separator
     
-    return dataLines.map(line => {
-      const values = line.split('|').map(v => v.trim()).filter(v => v);
+    return dataLines.map(line => {      const values = line.split('|').map(v => v.trim()).filter(v => v);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const row: any = {};
       headers.forEach((header, index) => {
         row[header] = values[index] || '';
@@ -269,7 +266,7 @@ export default function Home() {
               
               {/* Helper Text */}
               <div className="mt-3 flex items-center justify-between text-sm text-gray-500">
-                <span>Try asking: "Show me all customers" or "What are the recent orders?"</span>
+                <span>Try asking: &quot;Show me all customers&quot; or &quot;What are the recent orders?&quot;</span>
                 <span>Queries: {queryCount}</span>
               </div>
             </div>
